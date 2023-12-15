@@ -18,7 +18,7 @@ class MyUserAdmin(UserAdmin):
     inlines = (FileInline, )
     list_display = ('username', 'joined_at', 'file_count', 'is_active', 'is_staff', )
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
+        (None, {'fields': ('username', 'password', 'is_active', 'is_staff')}),
     )
 
     def file_count(self, obj):
