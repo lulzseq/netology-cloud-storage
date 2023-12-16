@@ -8,7 +8,8 @@ class User(AbstractUser):
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     joined_at = models.DateTimeField(default=timezone.now)
-    is_active = models.BooleanField(default=False)
+    is_authenticated = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     
     def __str__(self):

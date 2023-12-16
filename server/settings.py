@@ -21,51 +21,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'colored_verbose': {
-            '()': 'colorlog.ColoredFormatter',
-            'format': "%(blue)s%(asctime)-5s %(log_color)s%(levelname)-5s %(red)s%(name)-5s %(reset)s %(blue)s%(message)s"
-        },
-        'file_verbose': {
-            'format': "%(asctime)s %(levelname)s %(name)s %(message)s"
-        },
-    },
-    'handlers': {
-        'colored_console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'colored_verbose',
-        },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'formatter': 'file_verbose',
-            'filename': os.path.join(f'{BASE_DIR}/logs', '{0}.log'.format(date.today().strftime('%d-%m-%Y'))),
-        }
-    },
-    'loggers': {
-        'root': {
-            'level': 'INFO',
-            'handlers': ['colored_console'],
-            'propagate': False,
-        },
-        'django': {
-            'level': 'INFO',
-            'handlers': ['file'],
-            'propagate': True,
-        },
-        'django.utils.autoreload': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': False,
-        }
-    }
-}
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 
 INSTALLED_APPS = [
@@ -79,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'storage',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -151,12 +109,57 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    #    'DEFAULT_AUTHENTICATION_CLASSES': (
-    #        'rest_framework.authentication.SessionAuthentication',
-    #    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAdminUser'
+        'rest_framework.permissions.IsAuthenticated',
     ),
 }
 
 AUTH_USER_MODEL = 'accounts.User'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'colored_verbose': {
+            '()': 'colorlog.ColoredFormatter',
+            'format': "%(blue)s%(asctime)-5s %(log_color)s%(levelname)-5s %(red)s%(name)-5s %(reset)s %(blue)s%(message)s"
+        },
+        'file_verbose': {
+            'format': "%(asctime)s %(levelname)s %(name)s %(message)s"
+        },
+    },
+    'handlers': {
+        'colored_console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'colored_verbose',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'file_verbose',
+            'filename': os.path.join(f'{BASE_DIR}/logs', '{0}.log'.format(date.today().strftime('%d-%m-%Y'))),
+        }
+    },
+    'loggers': {
+        'root': {
+            'level': 'INFO',
+            'handlers': ['colored_console'],
+            'propagate': False,
+        },
+        'django': {
+            'level': 'INFO',
+            'handlers': ['file'],
+            'propagate': True,
+        },
+        'django.utils.autoreload': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': False,
+        }
+    }
+}

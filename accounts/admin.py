@@ -16,7 +16,9 @@ class FileInline(admin.TabularInline):
 class MyUserAdmin(UserAdmin):
     model = User
     inlines = (FileInline, )
-    list_display = ('username', 'joined_at', 'file_count', 'is_active', 'is_staff', )
+    list_filter = ()
+    list_display = ('username', 'joined_at', 'file_count',
+                    'is_active', 'is_staff', )
     fieldsets = (
         (None, {'fields': ('username', 'password', 'is_active', 'is_staff')}),
     )
@@ -26,5 +28,4 @@ class MyUserAdmin(UserAdmin):
 
 
 admin.site.register(User, MyUserAdmin)
-
 admin.site.unregister(Group)
