@@ -3,6 +3,7 @@ from .serializers import UserSerializer
 from rest_framework import permissions, viewsets, status
 from rest_framework.response import Response
 import logging
+from rest_framework.authentication import SessionAuthentication
 
 logger = logging.getLogger(__name__)
 
@@ -11,8 +12,9 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
-    # TODO change permissions to permissions.IsAuthenticated
-    
+    authentication_classes = []
+    # authentication_classes = [SessionAuthentication]
+
     def create(self, request, *args, **kwargs):
         try:
             serializer = self.get_serializer(data=request.data)
@@ -25,12 +27,13 @@ class UserViewSet(viewsets.ModelViewSet):
             logger.error(response_message)
             return Response({'response': response_message}, status=status.HTTP_400_BAD_REQUEST, content_type='application/json')
         return Response({'response': response_message}, status=status.HTTP_201_CREATED, content_type='application/json')
-    
+
     def update(self, request, *args, **kwargs):
         try:
             partial = kwargs.pop('partial', False)
             instance = self.get_object()
-            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer = self.get_serializer(
+                instance, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
             self.perform_update(serializer)
             response_message = f"User '{instance.username}' was successfully updated."
@@ -45,7 +48,8 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             serializer.save()
         except Exception as e:
-            logger.error(f"Function 'perform_update' failed. User '{serializer.instance.username}' was not updated. Error: {e}.")
+            logger.error(
+                f"Function 'perform_update' failed. User '{serializer.instance.username}' was not updated. Error: {e}.")
 
     def destroy(self, request, *args, **kwargs):
         try:
@@ -57,3 +61,4 @@ class UserViewSet(viewsets.ModelViewSet):
             response_message = f"User '{instance.username}' was not deleted. Error: {e}."
             logger.error(response_message)
         return Response({'response': response_message}, status=status.HTTP_204_NO_CONTENT, content_type='application/json')
+    
