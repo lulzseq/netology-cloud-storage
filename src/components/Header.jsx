@@ -19,11 +19,9 @@ export default function Header() {
   
       const response = await fetch('http://127.0.0.1:8000/logout/', {
         credentials: 'include',
-        mode: 'no-cors',
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken,
         },
       });
   
@@ -31,7 +29,7 @@ export default function Header() {
         throw new Error('Logout failed');
       }
   
-      console.log('Logout successful');
+      navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
       throw error;

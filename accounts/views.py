@@ -10,12 +10,29 @@ from .serializers import UserLoginSerializer, UserSerializer, UserRegisterSerial
 from rest_framework import permissions, status
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, renderer_classes
+from rest_framework.renderers import JSONRenderer
 from django.contrib.auth.decorators import login_required
 from django.middleware.csrf import get_token
 
 
 logger = logging.getLogger(__name__)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+# @authentication_classes([SessionAuthentication])
+def signup_view(request):
+    serializer = UserRegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        if user:
+            response_message = f"User '{user.username}' was successfully created."
+            logger.info(response_message)
+            return Response({'detail': response_message, "username": user.username}, status=status.HTTP_201_CREATED)
+    response_message = f"User '{user.username}' was not created. Error: {serializer.errors}."
+    logger.error(response_message)
+    return Response(response_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
@@ -40,31 +57,28 @@ def login_view(request):
     return Response({'detail': response_message}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@login_required
+@csrf_exempt
+@api_view(['GET'])
+# @login_required
+@renderer_classes([JSONRenderer])
+@permission_classes([permissions.AllowAny])
 # @authentication_classes([SessionAuthentication])
 def logout_view(request):
-    logout(request)
-    return Response({'detail': 'Logout successful'}, status=status.HTTP_200_OK)
+    user = request.user
+    try:
+        logout(request)
+        response_message = 'Logout successful'
+        logger.info(response_message)
+        return Response({'detail': response_message, "user": user.username}, status=status.HTTP_200_OK)
+    except Exception as e:
+        response_message = f"Logout failed. Error: {e}."
+        logger.error(response_message)
+        return Response({'detail': response_message}, status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['POST'])
-@permission_classes([permissions.AllowAny])
-# @authentication_classes([SessionAuthentication])
-def signup_view(request):
-    serializer = UserRegisterSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        if user:
-            response_message = f"User '{user.username}' was successfully created."
-            logger.info(response_message)
-            return Response({'detail': response_message, "username": user.username}, status=status.HTTP_201_CREATED)
-    response_message = f"User '{user.username}' was not created. Error: {serializer.errors}."
-    logger.error(response_message)
-    return Response(response_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @login_required
-@permission_classes([permissions.AllowAny])
+@permission_classes([permissions.IsAuthenticated])
 # @authentication_classes([SessionAuthentication])
 def user_view(request):
     serializer = UserSerializer(request.user)

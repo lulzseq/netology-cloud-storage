@@ -16,11 +16,9 @@ function Auth({ action }) {
 
   const handleAuth = async () => {
     const response = await fetch(`http://127.0.0.1:8000/${action}/`, {
-      credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken,
       },
       body: JSON.stringify({ username, password }),
     });
@@ -35,29 +33,6 @@ function Auth({ action }) {
     console.log(data)
     navigate('/', { state: { username: data.username } });
   };
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     const response = await fetch('http://127.0.0.1:8000/user/', {
-  //       credentials: 'include',
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'X-CSRFToken': csrftoken,
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       console.log('useEffect: response ok')
-  //       console.log(data)
-  //     }
-
-  //     console.log('useEffect: response not ok')
-  //   };
-
-  //   fetchUserData();
-  // }, []);
 
   return (
     <Center h={700}>
