@@ -14,6 +14,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.renderers import JSONRenderer
 from django.contrib.auth.decorators import login_required
 from django.middleware.csrf import get_token
+from django.contrib.auth.middleware import get_user
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
-# @authentication_classes([SessionAuthentication])
+@authentication_classes([SessionAuthentication])
 def signup_view(request):
     serializer = UserRegisterSerializer(data=request.data)
     if serializer.is_valid():
@@ -38,7 +39,7 @@ def signup_view(request):
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
-# @authentication_classes([SessionAuthentication])
+@authentication_classes([SessionAuthentication])
 def login_view(request):
     serializer = UserLoginSerializer(data=request.data)
     if serializer.is_valid():
@@ -47,7 +48,7 @@ def login_view(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            login(request, user)
+            login(request, user)            
             response_message = f"User '{user.username}' was successfully logged in."
             logger.info(response_message)
             return Response({'detail': response_message, "username": user.username}, status=status.HTTP_200_OK)
@@ -62,12 +63,13 @@ def login_view(request):
 # @login_required
 @renderer_classes([JSONRenderer])
 @permission_classes([permissions.AllowAny])
-# @authentication_classes([SessionAuthentication])
+@authentication_classes([SessionAuthentication])
 def logout_view(request):
+    new_user = get_user(request)
     user = request.user
     try:
         logout(request)
-        response_message = 'Logout successful'
+        response_message = f"User '{user.username}' was successfully logged out."
         logger.info(response_message)
         return Response({'detail': response_message, "user": user.username}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -79,7 +81,7 @@ def logout_view(request):
 
 @login_required
 @permission_classes([permissions.IsAuthenticated])
-# @authentication_classes([SessionAuthentication])
+@authentication_classes([SessionAuthentication])
 def user_view(request):
     serializer = UserSerializer(request.user)
     return Response({'user': serializer.data}, status=status.HTTP_200_OK)
