@@ -65,7 +65,6 @@ def login_view(request):
 @permission_classes([permissions.AllowAny])
 @authentication_classes([SessionAuthentication])
 def logout_view(request):
-    new_user = get_user(request)
     user = request.user
     try:
         logout(request)
@@ -78,7 +77,8 @@ def logout_view(request):
         return Response({'detail': response_message}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+@api_view(['GET'])
+@renderer_classes([JSONRenderer])
 @login_required
 @permission_classes([permissions.IsAuthenticated])
 @authentication_classes([SessionAuthentication])
