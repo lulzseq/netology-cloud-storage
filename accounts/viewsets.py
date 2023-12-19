@@ -1,9 +1,12 @@
-from .models import User
-from .serializers import UserSerializer
+import logging
+
 from rest_framework import permissions, viewsets, status
 from rest_framework.response import Response
-import logging
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import TokenAuthentication
+
+from .models import User
+from .serializers import UserSerializer
+
 
 logger = logging.getLogger(__name__)
 
@@ -11,9 +14,8 @@ logger = logging.getLogger(__name__)
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.AllowAny]
-    authentication_classes = []
-    # authentication_classes = [SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def create(self, request, *args, **kwargs):
         try:

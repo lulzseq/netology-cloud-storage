@@ -1,10 +1,13 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-import colorlog
 from datetime import date
 
+from dotenv import load_dotenv
+import colorlog
+
+
 load_dotenv()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
@@ -14,32 +17,24 @@ ALLOWED_HOSTS = ['*']
 
 BASE_URL = 'http://127.0.0.1:8000'
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:8000',
-    'http://0.0.0.0:3000',
-]
-
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:8000',
     'http://0.0.0.0:3000',
+    'https://localhost:3000',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000',
+    'http://0.0.0.0:3000',
+    'https://localhost:3000',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-
-# CORS_ORIGIN_WHITELIST = [
-#     'http://localhost:3000',
-#     'http://127.0.0.1:8000',
-# ]
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# CSRF_COOKIE_SAMESITE = 'None'
-# CSRF_COOKIE_HTTPONLY = True
-# SESSION_COOKIE_HTTPONLY = False
 
 LOGIN_URL = '/login/'
 
@@ -54,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'storage',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [

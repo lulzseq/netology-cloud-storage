@@ -1,14 +1,14 @@
-from rest_framework import permissions, viewsets
+import logging
+
+from django.shortcuts import get_object_or_404
+from rest_framework import permissions, viewsets, status
+from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.authentication import TokenAuthentication
+
 from .models import File
 from .serializers import FileSerializer
 
-from django.shortcuts import get_object_or_404
-
-from rest_framework.response import Response
-from rest_framework import permissions, status
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from rest_framework.authentication import SessionAuthentication
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -17,17 +17,17 @@ class FileViewSet(viewsets.ModelViewSet):
     queryset = File.objects.all()
     serializer_class = FileSerializer
     parser_classes = [MultiPartParser, FormParser, JSONParser]
-    permission_classes = [permissions.AllowAny]
-    authentication_classes = []
-    # authentication_classes = [SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     if user.is_anonymous:
-    #         return File.objects.none()
-    #     if user.is_staff:
-    #         return File.objects.all()
-    #     return File.objects.filter(by_user=user)
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_anonymous:
+            return File.objects.none()
+        if user.is_staff:
+            return File.objects.all()
+        return File.objects.filter(by_user=user.id)
+
 
     def post(self, request, format=None):
         serializer = FileSerializer(data=request.data)

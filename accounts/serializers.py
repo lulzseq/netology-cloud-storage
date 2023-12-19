@@ -1,13 +1,21 @@
+import logging
+
+from django.contrib.auth import authenticate
+
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
+
 from .models import User
 from storage.models import File
-from rest_framework.response import Response
-from rest_framework import permissions, status
-import logging
-from django.contrib.auth import authenticate
-from django.contrib.auth.password_validation import validate_password
+
 
 logger = logging.getLogger(__name__)
+
+
+class TokenSeriazliser(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = ['key']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,31 +41,6 @@ class UserSerializer(serializers.ModelSerializer):
         return filenames
 
 
-class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
-
-    def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-
-        if not username or not password:
-            raise serializers.ValidationError('Both username and password are required.')
-
-        user = authenticate(username=username, password=password)
-        if user and user.is_active:
-            data['user'] = user
-        else:
-            raise serializers.ValidationError('Invalid Credentials')
-
-        return data
-    
-    def to_representation(self, instance):
-        return {
-            'detail': 'Invalid username or password'
-        }
-
-
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -69,3 +52,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user_obj
+
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    class Meta:
+        model = User
