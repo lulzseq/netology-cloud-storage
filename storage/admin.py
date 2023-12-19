@@ -1,8 +1,7 @@
 from django.contrib import admin
-from . import models
-import os
 from django.utils.html import format_html
-from django.conf import settings
+
+from . import models
 
 
 @admin.register(models.File)

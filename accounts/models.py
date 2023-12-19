@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-from rest_framework.response import Response
+from django.contrib.auth.models import AbstractUser
+
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)

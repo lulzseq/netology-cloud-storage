@@ -1,8 +1,10 @@
-from django.shortcuts import redirect
+import logging
+
 from django.conf import settings
 from django.http import HttpResponse
+
 from .models import File
-import logging
+
 
 logger = logging.getLogger(__name__)
 

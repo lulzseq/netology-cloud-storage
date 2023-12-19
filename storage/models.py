@@ -1,13 +1,14 @@
 import os
+import logging
+
 from django.db import models
 from django.utils import timezone
-from django.utils.html import format_html
-from accounts.models import User
+
 from django.dispatch import receiver
 from django.conf import settings
-from rest_framework.response import Response
-from rest_framework import permissions, status
-import logging
+
+from accounts.models import User
+
 
 logger = logging.getLogger(__name__)
 

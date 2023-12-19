@@ -1,24 +1,22 @@
 from django.contrib import admin
 from django.urls import path, include
-from .routers import router
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+
+from .routers import router
 from storage.views import redirect_to_file
-from accounts.views import login_view, signup_view, logout_view, user_view
+from accounts.views import login_view, signup_view, logout_view
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(
-        template_name='templates/index.html'), name='Home'),
     path('api/', include(router.urls)),
     path('s/<str:hash>/', redirect_to_file, name='redirect_to_file'),
     
     path('login/', login_view, name='login'),
     path('register/', signup_view, name='register'),
     path('logout/', logout_view, name='logout'),
-    path('user/', user_view, name='user'),
 ]
 
 if settings.DEBUG:
