@@ -1,41 +1,33 @@
-import { Container, Button, Menu, Grid, Text, Center, GridCol, rem } from '@mantine/core';
-import { IconBrandGoogleDrive, IconLogout } from '@tabler/icons-react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import getCookie from '../utils/getCookie';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { IconBrandGoogleDrive } from '@tabler/icons-react';
+import { Container, Button, Grid, Text, Center, GridCol, rem } from '@mantine/core';
 
 
 export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const { state } = location || {};
-  const username = state && state.username ? state.username : null;
-  
+  const username = JSON.parse(sessionStorage.getItem('user')).username || null;
+
   const handleLogout = async () => {
-    try {
-      const csrftoken = getCookie('csrftoken');
-      console.log(`Csrftoken: ${csrftoken}`);
-  
-      const response = await fetch('http://127.0.0.1:8000/logout/', {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error('Logout failed');
-      }
-  
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout error:', error);
-      throw error;
+    const response = await fetch('http://127.0.0.1:8000/logout/', {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Logout failed');
     }
+    sessionStorage.clear();
+    navigate('/login');
   };
-  
+
 
   return (
     <div>

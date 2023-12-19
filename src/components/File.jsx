@@ -1,15 +1,13 @@
-import React from 'react'
-import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem } from '@mantine/core';
-import { IconTrash, IconDownload, IconEdit, IconLink, IconCopy, IconCheck } from '@tabler/icons-react';
-import { loadFiles } from '../redux/slices/loadSlice';
-import { downloadFile } from '../redux/slices/downloadSlice';
-import { deleteFile } from '../redux/slices/deleteSlice';
-import { renameFile } from '../redux/slices/renameSlice';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useState } from 'react';
+
+import { IconTrash, IconDownload, IconEdit, IconLink, IconCopy, IconCheck } from '@tabler/icons-react';
+import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem } from '@mantine/core';
+
+import { renameFile, downloadFile, deleteFile, loadFiles } from '../redux/slices/fileSlice';
+
 
 export default function File({ file }) {
-
   const dispatch = useDispatch();
   const [editingFile, setEditingFile] = useState(null);
   const [newFileName, setNewFileName] = useState('');
@@ -42,6 +40,7 @@ export default function File({ file }) {
       });
   };
 
+  
   return (
     <>
       <Container bg="dark.5" style={{ padding: '20px', borderRadius: '8px' }}>
@@ -52,13 +51,14 @@ export default function File({ file }) {
                 type="text"
                 value={newFileName}
                 onChange={(e) => setNewFileName(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSave()}
               />
             ) : (
               file.filename
             )}
           </Grid.Col>
           <Grid.Col span={0} offset={4.7}>
-            <Popover width={420} trapFocus position="bottom" withArrow shadow="md">
+            <Popover width={450} trapFocus position="bottom" withArrow shadow="md">
               <Popover.Target>
                 <Button variant="light" size="md"><IconLink size={20} /></Button>
               </Popover.Target>
@@ -88,7 +88,7 @@ export default function File({ file }) {
               </Popover.Dropdown>
             </Popover>
           </Grid.Col>
-          <Grid.Col span={1} offset={0.04}>
+          <Grid.Col span={1} offset={0.03}>
             {editingFile && editingFile.id === file.id ? (
               <Button rightSection={<IconEdit size={16} />} variant="light" size="md" onClick={handleSave}>
                 Save

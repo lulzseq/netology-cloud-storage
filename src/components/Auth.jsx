@@ -1,9 +1,10 @@
-import { Container, Center, TextInput, PasswordInput, Space, Button, Anchor } from '@mantine/core';
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loadFiles } from '../redux/slices/loadSlice';
-import getCookie from '../utils/getCookie';
+
+import { Container, Center, TextInput, PasswordInput, Space, Button, Anchor } from '@mantine/core';
+
+import { login, signUp } from '../redux/slices/authSlice';
 
 
 function Auth({ action }) {
@@ -11,28 +12,26 @@ function Auth({ action }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const csrftoken = getCookie('csrftoken')
   const [error, setError] = useState();
 
-  const handleAuth = async () => {
-    const response = await fetch(`http://127.0.0.1:8000/${action}/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (!response.ok) {
-      console.log('User was not authenticated')
-      setError('Invalid data');
-      return navigate('/login');
+  const handleLogin = async () => {
+    const response = await dispatch(login({ username, password }));
+    if (login.fulfilled.match(response)) {
+      navigate('/');
+    } else {
+      setError('Login failed. Incorrect data.');
     }
-    const data = await response.json();
-    console.log('User was authenticated')
-    console.log(data)
-    navigate('/', { state: { username: data.username } });
   };
+
+  const handleSignUp = async () => {
+    const response = await dispatch(signUp({ username, password }));
+    if (signUp.fulfilled.match(response)) {
+      navigate('/');
+    } else {
+      setError('Sign up failed. Incorrect data.');
+    }
+  }
+
 
   return (
     <Center h={700}>
@@ -53,15 +52,16 @@ function Auth({ action }) {
           value={password}
           {...(error && { error: error })}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
         />
         <Space h="xl" />
-        <Center>
-          <Button variant="filled" size='md' style={{ width: '150px' }} onClick={handleAuth}>
-            {action === 'login' ? 'Login' : 'Signup'}
-          </Button>
-        </Center>
-        {action === 'login' && (
+        {action === 'signin' ? (
           <>
+            <Center>
+              <Button variant="filled" size='md' style={{ width: '150px' }} onClick={handleLogin}>
+                Login
+              </Button>
+            </Center>
             <Space h="md" />
             <Center>
               <Anchor href="signup">
@@ -69,10 +69,17 @@ function Auth({ action }) {
               </Anchor>
             </Center>
           </>
+        ) : (
+          <Center>
+            <Button variant="filled" size='md' style={{ width: '150px' }} onClick={handleSignUp}>
+              Sign up
+            </Button>
+          </Center>
         )}
       </Container>
     </Center>
   );
 }
+
 
 export default Auth;

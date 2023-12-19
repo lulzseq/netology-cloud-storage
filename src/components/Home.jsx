@@ -1,17 +1,19 @@
-import { Container, FileInput, Button, Space, Grid } from '@mantine/core';
-import { IconUpload } from '@tabler/icons-react';
-import { loadFiles } from '../redux/slices/loadSlice';
-import { uploadFile } from '../redux/slices/uploadSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect, useState, useRef } from 'react';
+
+import { IconUpload } from '@tabler/icons-react';
+import { Container, FileInput, Button, Space, Grid } from '@mantine/core';
+
 import File from './File';
+import Loading from './Loading';
+import { uploadFile, loadFiles, initialFileState } from '../redux/slices/fileSlice';
+
 
 export default function Home() {
-  const files = useSelector((state) => state.load.files) || [];
+  const { files, loading } = useSelector((state) => state.file) || initialFileState;
   const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
@@ -22,7 +24,7 @@ export default function Home() {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('by_user', '1');
+      formData.append('by_user', JSON.parse(sessionStorage.getItem('user')).id);
       dispatch(uploadFile(formData))
         .then(() => {
           dispatch(loadFiles());
@@ -34,9 +36,11 @@ export default function Home() {
     }
   };
 
+
   useEffect(() => {
     dispatch(loadFiles());
   }, [dispatch]);
+
 
   return (
     <div>
@@ -79,8 +83,11 @@ export default function Home() {
       {Array.isArray(files) && files.length > 0 ? (
         files.map((file) => <File key={file.id} file={file} />)
       ) : (
-        <p>No files available</p>
+        <p></p>
       )}
+
+      {loading && <Loading />}
+
     </div>
   );
 }
