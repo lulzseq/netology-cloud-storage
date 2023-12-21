@@ -1,67 +1,88 @@
-import { useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { IconBrandGoogleDrive } from '@tabler/icons-react';
-import { Container, Button, Grid, Text, Center, GridCol, rem } from '@mantine/core';
+import { Container, Button, Grid, Text, Center, GridCol, Menu } from '@mantine/core';
+
+import { checkUser, logout } from '../redux/slices/authSlice';
 
 
 export default function Header() {
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
-  const username = JSON.parse(sessionStorage.getItem('user')).username || null;
+  const user = useSelector((state) => state.auth.user);
 
   const handleLogout = async () => {
-    const response = await fetch('http://127.0.0.1:8000/logout/', {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Logout failed');
-    }
-    sessionStorage.clear();
+    dispatch(logout());
     navigate('/login');
   };
 
+  useEffect(() => {
+    dispatch(checkUser());
+  }, [dispatch]);
 
   return (
-    <div>
-      <Container fluid h={50} bg="dark.7" style={{ padding: '20px 30px', marginBottom: '50px' }}>
-        <Grid>
-          <GridCol span={2}>
-            <Center inline style={{ gap: '10px' }}>
-              <IconBrandGoogleDrive size={30} />
-              <Text size='xl'>File manager</Text>
-            </Center>
-          </GridCol>
+    <Container fluid h={50} bg="dark.7" style={{ padding: '20px 30px', marginBottom: '50px' }}>
+      <Grid>
+        <GridCol span={2}>
+          <Center inline style={{ gap: '10px' }}>
+            <IconBrandGoogleDrive size={30} />
+            <Text size='xl'>File manager</Text>
+          </Center>
+        </GridCol>
 
-          {username ? (
-            <GridCol span={1} offset={8}>
+        {user ? (
+          <>
+            {user.is_staff ? (
               <Center inline style={{ gap: '10px' }}>
-                <Button
-                  variant='light'
-                  size="md">{username}
-                </Button>
-                <Button
-                  size="md" onClick={handleLogout}>Logout
-                </Button>
+                <GridCol span={10} offset={23}>
+                  <Menu trigger="hover" openDelay={100} closeDelay={400}>
+                    <Menu.Target>
+                      <Button size="md">Admin Panel</Button>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Item onClick={() => navigate('/admin/users')}>Manage users</Menu.Item>
+                      <Menu.Item onClick={() => navigate('/admin/files')}>Manage files</Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
+                </GridCol>
+                <GridCol span={0} offset={23}>
+                  <Center inline style={{ gap: '10px' }}>
+                    <Button
+                      variant='light'
+                      size="md"
+                      onClick={() => navigate('/')}>{user.username}
+                    </Button>
+                    <Button
+                      size="md" onClick={handleLogout}>Logout
+                    </Button>
+                  </Center>
+                </GridCol>
               </Center>
-            </GridCol>
-          ) : (
-            <GridCol span={1} offset={9}>
-              <Button
-                size="md" onClick={() => navigate('/login')}>Login
-              </Button>
-            </GridCol>
-          )}
-
-        </Grid>
-      </Container>
-    </div >
+            ) : (
+              <GridCol span={1} offset={8}>
+                <Center inline style={{ gap: '10px' }}>
+                  <Button
+                    variant='light'
+                    size="md">{user.username}
+                  </Button>
+                  <Button
+                    size="md" onClick={handleLogout}>Logout
+                  </Button>
+                </Center>
+              </GridCol>
+            )}
+          </>
+        ) : (
+          <GridCol span={1} offset={9}>
+            <Button
+              size="md" onClick={() => navigate('/login')}>Login
+            </Button>
+          </GridCol>
+        )}
+      </Grid>
+    </Container>
   )
 }
