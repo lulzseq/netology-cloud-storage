@@ -11,7 +11,7 @@ export const initialFileState = {
 
 export const renameFile = createAsyncThunk(
   'file/renameFile',
-  async ({ fileId, newName }) => {
+  async ({ fileId, newFilename }) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/files/${fileId}/`, {
         method: 'PATCH',
@@ -19,7 +19,7 @@ export const renameFile = createAsyncThunk(
           'Content-Type': 'application/json',
           'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
         },
-        body: JSON.stringify({ filename: newName }),
+        body: JSON.stringify({ filename: newFilename }),
       });
 
       if (!response.ok) {
@@ -36,19 +36,19 @@ export const renameFile = createAsyncThunk(
 export const loadFiles = createAsyncThunk(
   "file/loadFiles",
   async () => {
-    const token = JSON.parse(sessionStorage.getItem('user')).token;
+    const user = JSON.parse(sessionStorage.getItem('user'));
 
-    if (!token) {
+    if (!user) {
       throw new Error("No token found");
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/files/", {
+      const response = await fetch(`http://127.0.0.1:8000/api/files/`, {
         credentials: 'include',
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Token " + token,
+          "Authorization": "Token " + user.token,
         },
       });
 
@@ -151,6 +151,9 @@ export const uploadFile = createAsyncThunk(
   }
 );
 
+export const fileSliceActions = {
+  loadFiles: loadFiles,
+};
 
 const fileSlice = createSlice({
   name: 'file',
