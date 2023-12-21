@@ -8,7 +8,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authtoken.models import Token
 
-from .serializers import UserLoginSerializer, UserSerializer, UserRegisterSerializer, TokenSeriazliser
+from .serializers import UserLoginSerializer, UserSerializer, UserRegisterSerializer, TokenSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ def signup_view(request):
                 "user": {
                     "id": user.id,
                     'username': user.username,
-                    'token': TokenSeriazliser(token).data['key']
+                    'token': TokenSerializer(token).data['key']
                 },
             }, status=status.HTTP_201_CREATED)
     response_message = f"User '{user.username}' was not created. Error: {serializer.errors}."
@@ -55,7 +55,7 @@ def login_view(request):
             "user": {
                         "id": authenticated_user.id,
                         'username': authenticated_user.username,
-                        'token': TokenSeriazliser(token).data['key']
+                        'token': TokenSerializer(token).data['key']
                         }
         }, status=200)
     logger.warning(f'Login failed. Error: {serializer.errors}.')

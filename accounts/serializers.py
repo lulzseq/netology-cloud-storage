@@ -12,7 +12,7 @@ from storage.models import File
 logger = logging.getLogger(__name__)
 
 
-class TokenSeriazliser(serializers.ModelSerializer):
+class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
         fields = ['key']
