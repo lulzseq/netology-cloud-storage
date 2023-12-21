@@ -39,6 +39,19 @@ class UserSerializer(serializers.ModelSerializer):
         user_files = File.objects.filter(by_user=obj)
         filenames = [file.filename for file in user_files if file.file]
         return filenames
+    
+
+class RestrictedUserSerializer(serializers.ModelSerializer):
+    files = serializers.SerializerMethodField(source=File.objects.all())
+    
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'files')
+        
+    def get_files(self, obj):
+        user_files = File.objects.filter(by_user=obj)
+        filenames = [file.filename for file in user_files if file.file]
+        return filenames
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
