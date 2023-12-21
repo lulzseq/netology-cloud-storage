@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { IconTrash, IconDownload, IconEdit, IconLink, IconCopy, IconCheck } from '@tabler/icons-react';
-import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem } from '@mantine/core';
+import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem, TextInput } from '@mantine/core';
 
 import { renameFile, downloadFile, deleteFile, loadFiles } from '../redux/slices/fileSlice';
 
@@ -10,24 +10,26 @@ import { renameFile, downloadFile, deleteFile, loadFiles } from '../redux/slices
 export default function File({ file }) {
   const dispatch = useDispatch();
   const [editingFile, setEditingFile] = useState(null);
-  const [newFileName, setNewFileName] = useState('');
+  const [newFilename, setNewFilename] = useState('');
 
   const handleEdit = (file) => {
     setEditingFile(file);
-    setNewFileName(file.filename);
+    setNewFilename(file.filename);
   };
 
   const handleSave = () => {
     if (editingFile) {
-      dispatch(renameFile({ fileId: editingFile.id, newName: newFileName }))
+      dispatch(renameFile({ fileId: editingFile.id, newFilename: newFilename }))
         .then(() => {
-          setEditingFile(null);
           dispatch(loadFiles());
+          setEditingFile(null);
         })
         .catch((error) => {
           console.error('Error renaming file:', error);
         });
-    }
+    } 
+    setEditingFile(null);
+    setNewFilename('');
   };
 
   const handleDelete = (fileId) => {
@@ -40,24 +42,24 @@ export default function File({ file }) {
       });
   };
 
-  
+
   return (
     <>
       <Container bg="dark.5" style={{ padding: '20px', borderRadius: '8px' }}>
         <Grid>
-          <Grid.Col span={1}>
+          <Grid.Col span={2} offset={0.5}>
             {editingFile && editingFile.id === file.id ? (
               <input
                 type="text"
-                value={newFileName}
-                onChange={(e) => setNewFileName(e.target.value)}
+                value={newFilename}
+                onChange={(e) => setNewFilename(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSave()}
               />
             ) : (
               file.filename
             )}
           </Grid.Col>
-          <Grid.Col span={0} offset={4.7}>
+          <Grid.Col span={0} offset={3}>
             <Popover width={450} trapFocus position="bottom" withArrow shadow="md">
               <Popover.Target>
                 <Button variant="light" size="md"><IconLink size={20} /></Button>
