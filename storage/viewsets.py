@@ -46,7 +46,7 @@ class FileViewSet(viewsets.ModelViewSet):
             response_message = f"File with id='{instance.id}' was successfully updated by user '{instance.by_user}'."
             logger.info(response_message)
         except Exception as e:
-            response_message = f"File with id='{instance.id}' was not updated. Error: {e}."
+            response_message = f"File was not updated. Error: {e}."
             logger.error(response_message)
             return Response({'response': response_message},
                             status=status.HTTP_400_BAD_REQUEST,
