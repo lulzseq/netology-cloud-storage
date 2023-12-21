@@ -1,6 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 
+export const initialUsersState = {
+  user: {},
+  loading: false,
+  error: null
+}
+
+
 export const signUp = createAsyncThunk(
   'auth/signUp',
   async ({ username, password }) => {
@@ -51,6 +58,49 @@ export const login = createAsyncThunk(
   }
 );
 
+export const checkUser = createAsyncThunk(
+  'auth/checkUser',
+  async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/users/${JSON.parse(sessionStorage.getItem('user')).id}/`, {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid data');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async () => {
+    const response = await fetch('http://127.0.0.1:8000/logout/', {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Logout failed');
+    }
+    sessionStorage.clear();
+  });
+
 
 const authSlice = createSlice({
   name: 'auth',
@@ -59,9 +109,15 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(login.rejected, (state, action) => {
       state.error = action.error.message || 'Login failed';
-    }); 
+    });
     builder.addCase(signUp.rejected, (state, action) => {
       state.error = action.error.message || 'Signup failed';
+    });
+    builder.addCase(checkUser.rejected, (state, action) => {
+      state.error = action.error.message || 'Check user failed';
+    });
+    builder.addCase(checkUser.fulfilled, (state, action) => {
+      state.user = action.payload;
     });
   },
 });
