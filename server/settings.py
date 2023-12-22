@@ -1,4 +1,5 @@
 import os
+import socket
 from pathlib import Path
 from datetime import date
 
@@ -9,34 +10,25 @@ import colorlog
 load_dotenv()
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+
+
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
-BASE_URL = 'http://127.0.0.1:8000'
+BASE_HOST = os.getenv('BASE_HOST')
+BASE_URL = os.getenv('BASE_URL')
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:8000',
-    'http://0.0.0.0:3000',
-    'https://localhost:3000',
-]
+ALLOWED_HOSTS = [BASE_HOST, BASE_URL]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:8000',
-    'http://0.0.0.0:3000',
-    'https://localhost:3000',
-]
+CSRF_TRUSTED_ORIGINS = [os.getenv('REACT_URL')]
+CORS_ALLOWED_ORIGINS = [os.getenv('REACT_URL')]
 
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',

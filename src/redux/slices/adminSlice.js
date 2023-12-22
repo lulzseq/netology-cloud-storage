@@ -15,7 +15,7 @@ export const initialAdminState = {
 export const loadUsers = createAsyncThunk(
   'admin/loadUsers',
   async () => {
-    const response = await fetch('http://127.0.0.1:8000/api/users/', {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/`, {
       credentials: 'include',
       method: 'GET',
       headers: {
@@ -36,7 +36,7 @@ export const loadUsers = createAsyncThunk(
 export const createUser = createAsyncThunk(
   'admin/createUser',
   async ({ username, password }) => {
-    const response = await fetch('http://127.0.0.1:8000/api/users/', {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const createUser = createAsyncThunk(
 export const renameUser = createAsyncThunk(
   'admin/renameUser',
   async ({ userId, newUsername }) => {
-    const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}/`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ export const renameUser = createAsyncThunk(
 export const deleteUser = createAsyncThunk(
   'admin/deleteUser',
   async (userId) => {
-    const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}/`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

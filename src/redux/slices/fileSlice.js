@@ -13,7 +13,7 @@ export const renameFile = createAsyncThunk(
   'file/renameFile',
   async ({ fileId, newFilename }) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/files/${fileId}/`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/${fileId}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export const loadFiles = createAsyncThunk(
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/files/`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/`, {
         credentials: 'include',
         method: "GET",
         headers: {
@@ -70,7 +70,7 @@ export const deleteFile = createAsyncThunk(
   'file/deleteFile',
   async (fileId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/files/${fileId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/${fileId}`, {
         credentials: 'include',
         headers: {
           'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token
@@ -93,7 +93,7 @@ export const downloadFile = createAsyncThunk(
   'file/downloadFile',
   async (fileId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/files/${fileId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/${fileId}`, {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -133,7 +133,7 @@ export const uploadFile = createAsyncThunk(
   'file/uploadFile',
   async (formData) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/files/', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/`, {
         headers: {
           'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
         },
