@@ -46,8 +46,9 @@ jobs:
           git add .
           git commit -m "Deploy to GitHub Pages by GitHub Actions"
 
-          # Set the GitHub token for authentication
+          # Configure Git with the GitHub token for authentication
           git remote add origin-repo "https://github.com/lulzseq//netology-cloud-storage.git"
+          git remote set-url origin-repo "https://${GH_TOKEN}@github.com/lulzseq//netology-cloud-storage.git"
 
           # Push changes to the 'gh-pages' branch
           git push -f origin-repo gh-pages
