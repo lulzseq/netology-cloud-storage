@@ -10,7 +10,7 @@ import colorlog
 load_dotenv()
 
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 BASE_HOST = os.getenv('BASE_HOST')
 BASE_URL = os.getenv('BASE_URL')
 
-ALLOWED_HOSTS = [BASE_HOST, BASE_URL, 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
 
 CSRF_TRUSTED_ORIGINS = [
     os.getenv('REACT_URL'),
