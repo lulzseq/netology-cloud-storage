@@ -10,8 +10,6 @@ import colorlog
 load_dotenv()
 
 
-
-
 DEBUG = True
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +18,20 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 BASE_HOST = os.getenv('BASE_HOST')
 BASE_URL = os.getenv('BASE_URL')
 
-ALLOWED_HOSTS = [BASE_HOST, BASE_URL]
+ALLOWED_HOSTS = [BASE_HOST, BASE_URL, 'localhost', '127.0.0.1']
 
-CSRF_TRUSTED_ORIGINS = [os.getenv('REACT_URL')]
-CORS_ALLOWED_ORIGINS = [os.getenv('REACT_URL')]
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv('REACT_URL'),
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://10.100.101.205:3000']
+
+CORS_ALLOWED_ORIGINS = [
+    os.getenv('REACT_URL'),
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://10.100.101.205:3000'
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -107,7 +115,9 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = "/files/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
 
@@ -115,7 +125,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
