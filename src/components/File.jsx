@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { IconTrash, IconDownload, IconEdit, IconLink, IconCopy, IconCheck } from '@tabler/icons-react';
-import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem, TextInput } from '@mantine/core';
+import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem } from '@mantine/core';
 
 import { renameFile, downloadFile, deleteFile, loadFiles } from '../redux/slices/fileSlice';
 

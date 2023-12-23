@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { IconBrandGoogleDrive } from '@tabler/icons-react';
 import { Container, Button, Grid, Text, Center, GridCol, Menu } from '@mantine/core';
@@ -9,7 +9,6 @@ import { checkUser, logout } from '../redux/slices/authSlice';
 
 
 export default function Header() {
-  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
