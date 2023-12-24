@@ -9,31 +9,19 @@ import colorlog
 
 load_dotenv()
 
+try:
+    from .local_settings import *
+except ImportError:
+    from .deployment_settings import *
 
-DEBUG = os.getenv('DEBUG')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
-BASE_HOST = os.getenv('BASE_HOST')
-BASE_URL = os.getenv('BASE_URL')
+BASE_HOST = '127.0.0.1'
+BASE_URL = 'http://127.0.0.1:8000'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
-
-CSRF_TRUSTED_ORIGINS = [
-    os.getenv('REACT_URL'),
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'http://10.100.101.205:3000']
-
-CORS_ALLOWED_ORIGINS = [
-    os.getenv('REACT_URL'),
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'http://10.100.101.205:3000'
-]
-
-CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['*']
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -53,8 +41,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
