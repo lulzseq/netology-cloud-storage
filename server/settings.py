@@ -9,11 +9,7 @@ import colorlog
 
 load_dotenv()
 
-try:
-    from .local_settings import *
-except ImportError:
-    from .deployment_settings import *
-
+DEBUG = True
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
@@ -22,6 +18,27 @@ BASE_HOST = '127.0.0.1'
 BASE_URL = 'http://127.0.0.1:8000'
 
 ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000',
+    'http://0.0.0.0:3000',
+    'https://localhost:3000',
+    os.getenv('REACT_APP_API_URL')
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000',
+    'http://0.0.0.0:3000',
+    'https://localhost:3000',
+    os.getenv('REACT_APP_API_URL')
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
