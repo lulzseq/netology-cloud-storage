@@ -3,12 +3,15 @@ import logging
 
 from django.db import models
 from django.utils import timezone
-
 from django.dispatch import receiver
 from django.conf import settings
 
+from dotenv import load_dotenv
+
 from accounts.models import User
 
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +62,7 @@ class File(models.Model):
                 self.filename = self.file.name
                 self.file.name = os.path.join(userfolder, f'{hash_link}{file_ext}')
 
-            self.share_link = os.path.join(settings.BASE_URL, 's', f'file{hash_link}')
+            self.share_link = os.path.join(os.getenv('REACT_APP_API_URL'), 's', f'file{hash_link}')
 
         super().save(*args, **kwargs)
 
