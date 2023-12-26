@@ -35,14 +35,14 @@ export const loadUsers = createAsyncThunk(
 
 export const createUser = createAsyncThunk(
   'admin/createUser',
-  async ({ username, password }) => {
+  async ({ username, password, is_staff }) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
       },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password, is_staff })
     });
 
     if (!response.ok) {

@@ -57,12 +57,17 @@ class RestrictedUserSerializer(serializers.ModelSerializer):
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password')
+        fields = ('username', 'password', 'is_staff')
 
     def create(self, validated_data):
+        
+        if 'is_staff' not in validated_data:
+            validated_data['is_staff'] = False
+            
         user_obj = user = User.objects.create_user(
             username=validated_data['username'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            is_staff=validated_data['is_staff']
         )
         return user_obj
 
