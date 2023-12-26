@@ -279,3 +279,5 @@ $ sudo nginx -t
 $ sudo systemctl restart nginx
 ```
 Теперь проект Django + React должен быть полностью доступен по http://<IP сервера> на обычном порту 80.
+## 👮‍♀️ License
+- [MIT](https://github.com/lulzseq/netology-cloud-storage/blob/master/LICENSE)
