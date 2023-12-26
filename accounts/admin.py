@@ -21,7 +21,14 @@ class MyUserAdmin(UserAdmin):
     list_display = ('username', 'joined_at', 'file_count',
                     'is_active', 'is_staff', )
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'is_active', 'is_staff')}),
+        (None, {'fields': ('username', 'password')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'is_staff', 'is_active'),
+        }),
     )
 
     def file_count(self, obj):
