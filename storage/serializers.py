@@ -6,13 +6,14 @@ from accounts.models import User
 
 class FileSerializer(serializers.ModelSerializer):
     filename = serializers.CharField(max_length=255, default='')
+    description = serializers.CharField(max_length=255, default='')
     upload_datetime = serializers.SerializerMethodField()
     by_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     share_link = serializers.SerializerMethodField()
 
     class Meta:
         model = File
-        fields = ('id', 'filename', 'file',
+        fields = ('id', 'filename', 'file', 'description',
                   'upload_datetime', 'by_user', 'share_link')
 
     def get_upload_datetime(self, obj):

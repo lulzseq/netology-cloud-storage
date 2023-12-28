@@ -36,6 +36,7 @@ class File(models.Model):
     id = models.AutoField(primary_key=True)
     file = models.FileField(null=True, verbose_name='file in storage')
     filename = models.CharField(max_length=255, null=True, default='')
+    description = models.TextField(null=True, default='')
     share_link = models.CharField(max_length=100, null=True, default='')
     upload_datetime = models.DateTimeField(default=timezone.now)
     by_user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
