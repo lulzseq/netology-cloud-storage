@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { IconTrash, IconDownload, IconEdit, IconLink, IconCopy, IconCheck } from '@tabler/icons-react';
-import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem } from '@mantine/core';
+import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem, Avatar } from '@mantine/core';
 
 import { renameFile, downloadFile, deleteFile, loadFiles } from '../redux/slices/fileSlice';
 
@@ -27,7 +27,7 @@ export default function File({ file }) {
         .catch((error) => {
           console.error('Error renaming file:', error);
         });
-    } 
+    }
     setEditingFile(null);
     setNewFilename('');
   };
@@ -47,19 +47,34 @@ export default function File({ file }) {
     <>
       <Container bg="dark.5" style={{ padding: '20px', borderRadius: '8px' }}>
         <Grid>
-          <Grid.Col span={2} offset={0.5}>
-            {editingFile && editingFile.id === file.id ? (
-              <input
-                type="text"
-                value={newFilename}
-                onChange={(e) => setNewFilename(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSave()}
-              />
-            ) : (
-              file.filename
-            )}
+          <Grid.Col span={1}>
+            <Avatar radius="xl" size="md" variant="transparent" />
+            {file.by_user}
           </Grid.Col>
-          <Grid.Col span={0} offset={3}>
+          <Grid.Col span={3} offset={0.5}>
+            <>
+              {editingFile && editingFile.id === file.id ? (
+                <input
+                  type="text"
+                  value={newFilename}
+                  onChange={(e) => setNewFilename(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSave()}
+                />
+              ) : (
+                file.filename
+              )}
+              <Space h="xs" />
+              <Popover width={200} position="bottom" withArrow shadow="md">
+                <Popover.Target>
+                  <Text size='xs' td='underline'>ⓘ info</Text>
+                </Popover.Target>
+                <Popover.Dropdown>
+                  <Text size="xs">{file.description}</Text>
+                </Popover.Dropdown>
+              </Popover>
+            </>
+          </Grid.Col>
+          <Grid.Col span={0} offset={1}>
             <Popover width={450} trapFocus position="bottom" withArrow shadow="md">
               <Popover.Target>
                 <Button variant="light" size="md"><IconLink size={20} /></Button>

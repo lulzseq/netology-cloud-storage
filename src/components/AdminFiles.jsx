@@ -20,6 +20,7 @@ export default function AdminFiles() {
   const usernames = users.map(user => user.username);
   const [uploadBy, setUploadBy] = useState(JSON.parse(sessionStorage.getItem('user')).username)
   const [filename, setFilename] = useState('')
+  const [description, setDescription] = useState('');
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
@@ -36,6 +37,7 @@ export default function AdminFiles() {
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('filename', filename);
+      formData.append('description', description);
       formData.append('by_user', users.find(user => user.username === uploadBy)?.id);
       dispatch(uploadFile(formData))
         .then(() => {
@@ -48,6 +50,7 @@ export default function AdminFiles() {
     }
     close();
     setFilename('');
+    setDescription('');
     setSelectedFile(null);
   };
 
@@ -78,10 +81,16 @@ export default function AdminFiles() {
       )}
 
       <Modal opened={opened} onClose={close} title="Upload new file">
-      <TextInput
+        <TextInput
           label="File name"
           value={filename}
           onChange={(e) => setFilename(e.target.value)}
+        />
+        <Space h="xs" />
+        <TextInput
+          label="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <Space h="md" />
         <input

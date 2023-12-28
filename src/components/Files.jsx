@@ -15,6 +15,7 @@ export default function Files() {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const [filename, setFilename] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
@@ -30,6 +31,7 @@ export default function Files() {
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('filename', filename);
+      formData.append('description', description);
       formData.append('by_user', JSON.parse(sessionStorage.getItem('user')).id);
       dispatch(uploadFile(formData))
         .then(() => {
@@ -40,6 +42,7 @@ export default function Files() {
           console.error('Error uploading file:', error);
         });
       setFilename('')
+      setDescription('');
     }
   };
 
@@ -63,6 +66,12 @@ export default function Files() {
           label="File name"
           value={filename}
           onChange={(e) => setFilename(e.target.value)}
+        />
+        <Space h="xs" />
+        <TextInput
+          label="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <Space h="md" />
         <Grid>
