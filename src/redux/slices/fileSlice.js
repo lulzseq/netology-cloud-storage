@@ -9,9 +9,9 @@ export const initialFileState = {
 };
 
 
-export const renameFile = createAsyncThunk(
-  'file/renameFile',
-  async ({ fileId, newFilename }) => {
+export const editFile = createAsyncThunk(
+  'file/editFile',
+  async ({ fileId, newFilename, newDescription }) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/files/${fileId}/`, {
         method: 'PATCH',
@@ -19,7 +19,7 @@ export const renameFile = createAsyncThunk(
           'Content-Type': 'application/json',
           'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
         },
-        body: JSON.stringify({ filename: newFilename }),
+        body: JSON.stringify({ filename: newFilename, description: newDescription }),
       });
 
       if (!response.ok) {
@@ -172,11 +172,11 @@ const fileSlice = createSlice({
       state.loading = false;
       state.error = action.error.message || 'Failed to load files';
     });
-    builder.addCase(renameFile.fulfilled, (state, action) => {
+    builder.addCase(editFile.fulfilled, (state, action) => {
       state.success = true;
       state.error = null;
     });
-    builder.addCase(renameFile.rejected, (state, action) => {
+    builder.addCase(editFile.rejected, (state, action) => {
       state.success = false;
       state.error = action.error.message || 'File renaming failed';
     });
