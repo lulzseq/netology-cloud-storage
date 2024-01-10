@@ -1,4 +1,5 @@
 import os
+import math
 import logging
 
 from django.db import models
@@ -31,12 +32,19 @@ def get_available_name(userfolder, filename):
         filename = f'{file_root}_{count}{file_ext}'
     return filename
 
+def convert_size(size_bytes):
+    size_name = ('B', 'KB', 'MB', 'GB')
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    s = round(size_bytes / math.pow(1024, i), 2)
+    return f'{s} {size_name[i]}'
+
 
 class File(models.Model):
     id = models.AutoField(primary_key=True)
     file = models.FileField(null=True, verbose_name='file in storage')
     filename = models.CharField(max_length=255, null=True, default='')
     description = models.TextField(null=True, default='')
+    size = models.CharField(null=True, default='')
     share_link = models.CharField(max_length=100, null=True, default='')
     upload_datetime = models.DateTimeField(default=timezone.now)
     by_user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
@@ -48,7 +56,6 @@ class File(models.Model):
 
         if self.id:
             logger.info(f"Update file with id='{self.id}' and filename='{self.filename}' was initialized by {self.by_user}.")
-            self.filename = check_unique_filename(userfolder, self.filename)
             old_full_filepath = self.file.path
             new_full_filepath = os.path.join(settings.MEDIA_ROOT, userfolder, self.filename)
             self.file.name = os.path.join(userfolder, self.filename)
@@ -64,6 +71,7 @@ class File(models.Model):
                 self.file.name = os.path.join(userfolder, f'{hash_link}{file_ext}')
 
             self.share_link = os.path.join(os.getenv('REACT_APP_API_URL'), 's', f'file{hash_link}')
+            self.size = convert_size(self.file.size)
 
         super().save(*args, **kwargs)
 

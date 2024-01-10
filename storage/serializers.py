@@ -9,16 +9,20 @@ class FileSerializer(serializers.ModelSerializer):
     description = serializers.CharField(max_length=255, default='')
     upload_datetime = serializers.SerializerMethodField()
     by_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    size = serializers.SerializerMethodField()
     share_link = serializers.SerializerMethodField()
 
     class Meta:
         model = File
         fields = ('id', 'filename', 'file', 'description',
-                  'upload_datetime', 'by_user', 'share_link')
+                  'upload_datetime', 'by_user', 'size', 'share_link')
 
     def get_upload_datetime(self, obj):
         datetime = obj.upload_datetime
         return datetime
+    
+    def get_size(self, obj):
+        return obj.size
 
     def get_share_link(self, obj):
         return obj.share_link
