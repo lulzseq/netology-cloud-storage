@@ -53,16 +53,16 @@ export const createUser = createAsyncThunk(
   }
 )
 
-export const renameUser = createAsyncThunk(
-  'admin/renameUser',
-  async ({ userId, newUsername }) => {
+export const editUser = createAsyncThunk(
+  'admin/editUser',
+  async ({ userId, newUsername, isStaff }) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}/`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
       },
-      body: JSON.stringify({ username: newUsername })
+      body: JSON.stringify({ username: newUsername, is_staff: isStaff })
     });
 
     if (!response.ok) {
