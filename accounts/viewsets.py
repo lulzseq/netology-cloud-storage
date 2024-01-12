@@ -50,8 +50,20 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             partial = kwargs.pop('partial', False)
             instance = self.get_object()
-            serializer = self.get_serializer(
-                instance, data=request.data, partial=partial)
+            password = request.data.get('password', None)
+            
+            if password:
+                serializer = self.get_serializer(instance, data=request.data, partial=partial)
+
+                if serializer.is_valid():
+                    instance.set_password(password)
+                    instance.save()
+                    logger.info(f"Password for user '{instance.username}' was changed successfully.")
+                    return Response({'message': 'Password updated successfully'}, status=status.HTTP_200_OK)
+
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
             self.perform_update(serializer)
             response_message = f"User '{instance.username}' was successfully updated."
