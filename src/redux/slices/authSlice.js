@@ -101,6 +101,40 @@ export const logout = createAsyncThunk(
     sessionStorage.clear();
   });
 
+  export const changeUsername = createAsyncThunk(
+    'auth/changeUsername',
+    async ({ newUsername }) => {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${JSON.parse(sessionStorage.getItem('user')).id}/`, {
+        credentials: 'include',
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
+        },
+        body: JSON.stringify({ username: newUsername }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid data');
+      }
+    }
+  )
+
+  export const changePassword = createAsyncThunk(
+    'auth/changePassword',
+    async ({ newPassword }) => {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/users/${JSON.parse(sessionStorage.getItem('user')).id}/`, {
+        credentials: 'include',
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token ' + JSON.parse(sessionStorage.getItem('user')).token,
+        },
+        body: JSON.stringify({ password: newPassword }),
+      });
+    }
+  )
+
 
 const authSlice = createSlice({
   name: 'auth',
