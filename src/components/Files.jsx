@@ -2,11 +2,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect, useState, useRef } from 'react';
 
 import { IconUpload } from '@tabler/icons-react';
-import { Container, FileInput, Button, Space, Grid, TextInput } from '@mantine/core';
+import { Container, FileInput, Button, Space, TextInput, Center, Group } from '@mantine/core';
 
 import File from './File';
 import Loading from './Loading';
 import { uploadFile, loadFiles, initialFileState } from '../redux/slices/fileSlice';
+import { loadUsers } from '../redux/slices/adminSlice';
 
 
 export default function Files() {
@@ -48,6 +49,7 @@ export default function Files() {
 
   useEffect(() => {
     dispatch(loadFiles());
+    dispatch(loadUsers());
     setSelectedFile(null);
     setFilename('');
   }, [dispatch]);
@@ -55,7 +57,8 @@ export default function Files() {
 
   return (
     <>
-      <Container bg="dark.5" style={{ padding: '40px', borderRadius: "8px" }}>
+      <Space h="lg" />
+      <Container bg="dark.5" style={{ padding: '20px 40px', borderRadius: '8px', width: '90%' }}>
         <input
           type="file"
           style={{ display: 'none' }}
@@ -74,48 +77,54 @@ export default function Files() {
           onChange={(e) => setDescription(e.target.value)}
         />
         <Space h="md" />
-        <Grid>
-          <Grid.Col span={10}>
-            <FileInput
-              onClick={() => fileInputRef.current.click()}
-              placeholder={selectedFile ? selectedFile.name : "Upload files"}
-              variant="filled" multiple style={{ border: "1px solid #5C5F66", borderRadius: "5px" }} />
-          </Grid.Col>
-          <Grid.Col span={1}>
-            <Button
-              variant="light"
-              size="md"
-              onClick={() => fileInputRef.current.click()}
-            >
-              Choose files
-            </Button>
-          </Grid.Col>
-        </Grid>
+        <Group>
+          <FileInput
+            size='md'
+            onClick={() => fileInputRef.current.click()}
+            placeholder={selectedFile ? selectedFile.name : 'Choose files'}
+            variant="default"
+            style={{ borderRadius: '3px', flex: '1' }}
+          />
+          <Button
+            variant="light"
+            size="md"
+            onClick={() => fileInputRef.current.click()}
+          >
+            Choose files
+          </Button>
+        </Group>
         <Space h="lg" />
-        <Button
-          rightSection={<IconUpload size={16} />}
-          variant="light"
-          size="md"
-          onClick={handleUpload}
-        >
-          Upload
-        </Button>
+        <Center>
+          <Button
+            rightSection={<IconUpload size={16} />}
+            variant="light"
+            size="md"
+            onClick={handleUpload}
+          >
+            Upload
+          </Button>
+        </Center>
       </Container>
-      <Space h="lg" />
+      <Space h="xs" />
 
       {Array.isArray(files) && files.length > 0 ? (
         files.map((file) => {
           if (file.by_user === JSON.parse(sessionStorage.getItem('user')).username) {
-            return <File key={file.id} file={file} />;
+            return (<>
+              <Container bg="dark.5" style={{ borderRadius: '8px', width: '90%' }}>
+                <File key={file.id} file={file} />
+              </Container>
+              <Space h="xs" />
+            </>);
           } else {
             return null;
           }
         })
-      ) : (
-        <p></p>
-      )}
+      ) : null}
 
-      {loading && <Loading />}
+      <Container>
+        {loading && <Loading />}
+      </Container>
     </>
   );
 }

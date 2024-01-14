@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { Container } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { Modal, Button, TextInput, PasswordInput, Space, Center, Checkbox } from '@mantine/core';
+
 import User from './User';
 import Loading from './Loading';
 import { loadUsers, createUser } from '../redux/slices/adminSlice';
-import { useDisclosure } from '@mantine/hooks';
-import { Modal, Button, TextInput, PasswordInput, Space, Center, Checkbox } from '@mantine/core';
+
 
 export default function AdminFiles() {
   const dispatch = useDispatch();
@@ -39,15 +42,15 @@ export default function AdminFiles() {
             <h2>Users</h2>
             <Button variant='light' onClick={open}>Create new user</Button>
           </Center>
-          <ul>
+          
             {users && users.map((user) => (
               <User key={user.id} user={user} />
             ))}
-          </ul>
+
         </Container>
       )}
 
-      <Modal opened={opened} onClose={close} title="Create user">
+      <Modal opened={opened} onClose={close} title="Create user" centered>
         <TextInput
           label="Username"
           placeholder="Input username"

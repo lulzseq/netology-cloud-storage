@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState, useRef } from 'react';
 
 import { useDisclosure } from '@mantine/hooks';
-import { Container, Center, Button, Modal, TextInput, NativeSelect, Space, FileInput, Grid } from '@mantine/core';
+import { Container, Center, Button, Modal, TextInput, NativeSelect, Space, FileInput, Group } from '@mantine/core';
 
 import File from './File';
 import Loading from './Loading';
@@ -69,18 +69,17 @@ export default function AdminFiles() {
         <Container>
           <Center inline style={{ gap: '20px' }}>
             <h2>Files</h2>
-
             <Button variant='light' onClick={open}>Upload new file</Button>
           </Center>
-          <ul>
-            {files && files.map((file) => (
-              <File key={file.id} file={file} />
-            ))}
-          </ul>
+
+          {files && files.map((file) => (
+            <File key={file.id} file={file} />
+          ))}
+
         </Container>
       )}
 
-      <Modal opened={opened} onClose={close} title="Upload new file">
+      <Modal opened={opened} onClose={close} title="Upload new file" centered>
         <TextInput
           label="File name"
           value={filename}
@@ -92,40 +91,35 @@ export default function AdminFiles() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <Space h="md" />
+        <Space h="lg" />
         <input
           type="file"
           style={{ display: 'none' }}
           ref={fileInputRef}
           onChange={handleFileInputChange}
         />
-        <Grid>
-          <Grid.Col span={7}>
-            <FileInput
-              onClick={() => fileInputRef.current.click()}
-              placeholder={selectedFile ? selectedFile.name : "Upload files"}
-              variant="filled" multiple style={{ border: "1px solid #5C5F66", borderRadius: "5px" }} />
-          </Grid.Col>
-          <Grid.Col span={1}>
-            <Button
-              variant="light"
-              size="md"
-              onClick={() => fileInputRef.current.click()}
-            >
-              Choose files
-            </Button>
-          </Grid.Col>
-        </Grid>
-        <Space h="md" />
+        <Group>
+          <FileInput
+            onClick={() => fileInputRef.current.click()}
+            placeholder={selectedFile ? selectedFile.name : 'Upload files'}
+            variant="default" multiple style={{ borderRadius: '5px', flex: '1' }} />
+          <Button
+            variant="light"
+            onClick={() => fileInputRef.current.click()}
+          >
+            Choose files
+          </Button>
+        </Group>
+        <Space h="xs" />
         <NativeSelect
           label="by user"
           data={usernames}
           defaultValue={JSON.parse(sessionStorage.getItem('user')).username}
           onChange={(e) => setUploadBy(e.target.value)} />
-        <Space h="md" />
+        <Space h="lg" />
         <Center>
           <Button
-            onClick={handleUpload}>Upload</Button>
+            onClick={handleUpload}>Upload file</Button>
         </Center>
       </Modal>
     </>
