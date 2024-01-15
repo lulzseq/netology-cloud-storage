@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { IconTrash, IconDownload, IconEdit, IconLink, IconCopy, IconCheck } from '@tabler/icons-react';
-import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem, Avatar, Modal, TextInput, Center } from '@mantine/core';
+import { Container, Button, Space, Grid, Popover, Text, CopyButton, ActionIcon, Tooltip, rem, Avatar, Modal, TextInput, Center, Group, Stack, Indicator } from '@mantine/core';
 
 import { editFile, downloadFile, deleteFile, loadFiles } from '../redux/slices/fileSlice';
 
@@ -14,6 +14,7 @@ export default function File({ file }) {
   const [newDescription, setNewDescription] = useState('');
   const [editModalOpened, setEditModalOpened] = useState(false);
   const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+  const users = useSelector((state) => state.admin.users);
 
   const handleEdit = (file) => {
     setEditingFile(file);
@@ -53,26 +54,37 @@ export default function File({ file }) {
   return (
     <>
       <Container bg="dark.5" style={{ padding: '20px', borderRadius: '8px' }}>
-        <Grid>
-          <Grid.Col span={1}>
-            <Avatar radius="xl" size="md" variant="transparent" />
-            {file.by_user}
-          </Grid.Col>
-          <Grid.Col span={3} offset={0.5}>
-            <>
+        <Group justify='center' align='center'>
+          <Group justify='space-between' wrap="nowrap" gap='xl' style={{ flex: '1', padding: '0px 30px', maxWidth: '80%' }} >
+            <Stack align="center" gap="0">
+              {users.find(user => user.username === file.by_user && user.is_staff) ? (
+                <Indicator inline label="staff" size={16}>
+                  <Avatar radius="xl" size="md" variant="transparent" />
+                  <Text>{file.by_user}</Text>
+                </Indicator>
+              ) : (
+                <>
+                  <Avatar radius="xl" size="md" variant="transparent" />
+                  <Text>{file.by_user}</Text>
+                </>)}
+            </Stack>
+            <Stack gap='4'>
               {file.filename}
-              <Space h="xs" />
               <Popover width={200} position="bottom" withArrow shadow="md">
                 <Popover.Target>
-                  <Text size='xs' td='underline'>ⓘ info</Text>
+                  <Group justify='flex-start' gap='4'>
+                    <Text size='xs'>ⓘ</Text>
+                    <Text size='xs' td='underline'>info</Text>
+                  </Group>
                 </Popover.Target>
                 <Popover.Dropdown>
                   <Text size="xs">{file.description}</Text>
                 </Popover.Dropdown>
               </Popover>
-            </>
-          </Grid.Col>
-          <Grid.Col span={0} offset={1}>
+            </Stack>
+            {file.size}
+          </Group>
+          <Group justify='center' align='center' gap='xs'>
             <Popover width={450} trapFocus position="bottom" withArrow shadow="md">
               <Popover.Target>
                 <Button variant="light" size="md"><IconLink size={20} /></Button>
@@ -102,28 +114,27 @@ export default function File({ file }) {
                 </Grid>
               </Popover.Dropdown>
             </Popover>
-          </Grid.Col>
-          <Grid.Col span={1} offset={0.03}>
+
+
             <Button rightSection={<IconEdit size={16} />} variant="light" size="md" onClick={() => handleEdit(file)}>
               Edit
             </Button>
-          </Grid.Col>
-          <Grid.Col span={1} offset={0.43}>
+
             <Button rightSection={<IconDownload size={16} />} variant="light" size="md" onClick={() => dispatch(downloadFile(file.id))}>
               Download
             </Button>
-          </Grid.Col>
-          <Grid.Col span={1} offset={1}>
+
             <Button rightSection={<IconTrash size={16} />} variant="light" size="md" color="red" onClick={() => setDeleteModalOpened(true)}>
               Delete
             </Button>
-          </Grid.Col>
-        </Grid>
+          </Group>
+        </Group>
       </Container >
-      <Space h="lg" />
+      <Space h="xs" />
 
       <Modal opened={editModalOpened} onClose={() => setEditModalOpened(false)} title="Edit file" centered>
         <TextInput
+          data-autofocus
           label="File name"
           value={newFilename}
           onChange={(e) => setNewFilename(e.target.value)} />
@@ -134,7 +145,7 @@ export default function File({ file }) {
           onChange={(e) => setNewDescription(e.target.value)} />
         <Space h="md" />
         <Center>
-          <Button onClick={handleSave} size="md" variant="light">Save</Button>
+          <Button onClick={handleSave}>Save</Button>
         </Center>
       </Modal>
 
@@ -144,7 +155,7 @@ export default function File({ file }) {
         </Center>
         <Space h="md" />
         <Center>
-          <Button variant="light" color="red" size="md" onClick={() => handleDelete(file.id)}>Delete</Button>
+          <Button color="red" onClick={() => handleDelete(file.id)}>Delete</Button>
         </Center>
         <Space h="md" />
       </Modal>

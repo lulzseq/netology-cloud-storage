@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { Container, Button, Space, Grid, Modal, TextInput, Center, Text, Checkbox } from '@mantine/core';
+import { Container, Button, Space, Stack, Modal, TextInput, Center, Text, Checkbox, Group, Indicator } from '@mantine/core';
 
 import { editUser, loadUsers, deleteUser } from '../redux/slices/adminSlice';
 
@@ -33,9 +33,6 @@ export default function User({ user }) {
           setEditingUser(null);
           setNewUserName('');
           dispatch(loadUsers());
-        })
-        .catch((error) => {
-          console.error('Error renaming user:', error);
         });
     }
     setEditModalOpened(false);
@@ -50,12 +47,13 @@ export default function User({ user }) {
   return (
     <>
       <Container bg="dark.5" style={{ padding: '20px', borderRadius: '8px' }}>
-        <Grid>
-          <Grid.Col span={3} offset={1}>
+        <Group justify='space-between' align='center'>
+          <Stack gap='0' style={{ padding: '0px 30px'}}>
+          {user.is_staff ? (<Indicator inline label="staff" size={16}>
             {user.username}
-            <Text size='xs'>{user.is_staff ? '*admin' : ''}</Text>
-          </Grid.Col>
-          <Grid.Col span={1} offset={4}>
+            </Indicator>) : (<Text>{user.username}</Text>)}
+          </Stack>
+          <Group justify='center' align='center'>
             <Button
               rightSection={<IconEdit size={16} />}
               variant="light"
@@ -64,8 +62,7 @@ export default function User({ user }) {
             >
               Edit
             </Button>
-          </Grid.Col>
-          <Grid.Col span={1} offset={0.5}>
+
             <Button
               rightSection={<IconTrash size={16} />}
               variant="light"
@@ -75,18 +72,18 @@ export default function User({ user }) {
             >
               Delete
             </Button>
-          </Grid.Col>
-        </Grid>
-      </Container>
-      <Space h="lg" />
+          </Group>
+        </Group>
+      </Container >
+      <Space h="xs" />
 
-      <Modal opened={editModalOpened} onClose={() => setEditModalOpened(false)} title="Edit user">
-        <TextInput label="Username" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} />
+      <Modal opened={editModalOpened} onClose={() => setEditModalOpened(false)} title="Edit user" centered>
+        <TextInput data-autofocus label="Username" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} />
         <Space h="lg" />
         <Checkbox defaultChecked={user.is_staff} label="Grant admin privileges" onChange={(e) => setIsStaff(e.target.checked)} />
         <Space h="lg" />
         <Center>
-          <Button onClick={handleSave} size="md" variant="light">Save</Button>
+          <Button onClick={handleSave}>Save</Button>
         </Center>
       </Modal>
 
@@ -96,7 +93,7 @@ export default function User({ user }) {
         </Center>
         <Space h="md" />
         <Center>
-          <Button variant="light" color="red" size="md" onClick={() => handleDelete(user.id)}>Delete</Button>
+          <Button color="red" onClick={() => handleDelete(user.id)}>Delete</Button>
         </Center>
         <Space h="md" />
       </Modal>
