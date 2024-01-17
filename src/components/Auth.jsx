@@ -28,7 +28,7 @@ function Auth({ action }) {
     if (signUp.fulfilled.match(response)) {
       navigate('/');
     } else {
-      setError('Sign up failed. Incorrect data.');
+      setError('Sign up failed. Try again with another username.');
     }
   }
 
