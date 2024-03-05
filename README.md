@@ -1,55 +1,55 @@
-# Дипломный проект по профессии «Fullstack-разработчик на Python»
+# Project on the profession «Fullstack developer»
 
-## ☁️ Облачное хранилище My Cloud
+## ☁️ Cloud-based storage
 
-Веб-приложение, которое работает как облачное хранилище. Приложение позволяет пользователям отображать, загружать, отправлять, скачивать и переименовывать файлы. Пользователи могут регистрироваться, логиниться в аккаунт, выходить из него. Пользователь имеет доступ только к своему аккаунту и своим файлам. Есть административный интерфейс — администратор может выполнять все вышеупомянутые действия с любыми пользователями или файлами.
+A web application that acts as cloud storage. The application allows users to display, upload, send, download, and rename files. Users can register, log in to an account, and log out of an account. The user has access only to their account and their files. There is an administrative interface - the administrator can perform all the above actions with any users or files.
 
 ## 🛠 Tech stack
 
-Django, React, Redux.  
-Полагаю у вас уже стоит Python v.3.10+, NodeJS v.18+, PostgreSQL v.14+.
+Python v.3.10+, NodeJS v.18+, PostgreSQL v.14+.
+Django, React, Redux.
 
-## 🔮 Локальная установка
+## 🔮 Local installation
 
-- клонируем репозиторий
+- clone repo
 ```
 $ git clone https://github.com/lulzseq/netology-cloud-storage.git
 $ cd netology-cloud-storage
 ```
-### База данных
+### Database
 
-- создаем базу данных PostgreSQL
+- create a database in PostgreSQL
 ```
 $ psql
 
 # CREATE DATABASE django_db;
 ```
-### Бэкенд
-- активируем виртуальное окружение
+### Backend
+- activate a virtual environment
 ```
 $ python -m venv env
 $ source ./env/bin/activate
 ```
-Создаем файл `.env`, где указываем параметры подключения к PostgreSQL и Django Secret Key:
+Create file `.env`, where we specify connection parameters to PostgreSQL and Django Secret Key:
 ```
 # Django
 
 DJANGO_SECRET_KEY = '<DJANGO_SECRET_KEY>'
 
 POSTGRES_DB = 'django_db'
-POSTGRES_USER = '<логин>'
-POSTGRES_PASSWORD = '<пароль>'
-POSTGRES_HOST = 'http://<IP сервера>'
+POSTGRES_USER = '<login>'
+POSTGRES_PASSWORD = '<password>'
+POSTGRES_HOST = 'http://<server IP>'
 POSTGRES_PORT = '5432'
 
 # React
 
-REACT_APP_API_URL = 'http://<IP сервера>'
+REACT_APP_API_URL = 'http://<server IP>'
 
-# Например, при локальном развертывании это будет http://127.0.0.1:8000
+# For example, in a local deployment, this would be http://127.0.0.1:8000
 ```
 
-- запускаем бэкенд
+- run the backend
 ```
 (env) $ pip install -r requirements.txt
 (env) $ python manage.py makemigrations accounts
@@ -57,62 +57,62 @@ REACT_APP_API_URL = 'http://<IP сервера>'
 (env) $ python manage.py migrate
 (env) $ python manage.py runserver
 ```
-Пути для API:
+API:
 
 ```
-POST /register/ создать пользователя
-POST /login/ логин пользователя
-GET /logout/ логаут пользователя
-PATCH /api/users/<id> переименовать пользователя по ID
-DELETE /api/users/ удалить пользователя
+POST /register/ create a user
+POST /login/ user login
+GET /logout/ user logout
+PATCH /api/users/<id> rename a user by ID
+DELETE /api/users/ delete user
 
-GET /api/users/ получить всех юзеров (или только запрашивающего пользователя)
-GET /api/users/<id> получить конкретного юзера по ID
+GET /api/users/ get all users (or just the requesting user)
+GET /api/users/<id> get a specific user by ID
 
-GET /api/files/ получить все файлы
-GET /api/files/<id> получить инфо файла по ID
+GET /api/files/ get all files
+GET /api/files/<id> retrieve file info by ID
 
-POST /api/files/ загрузить файл (form-data)
-PATCH /api/files/<id> переименовать файл по ID
-DELETE /api/files/<id> удалить файл по ID
+POST /api/files/ upload file (form-data)
+PATCH /api/files/<id> rename the file by ID
+DELETE /api/files/<id> delete file by ID
 ```
-### Фронтенд
-- запускаем фронтенд
+### Frontend
+- run the frontend
 ```
 (env) $ yarn
 (env) $ yarn start
 ```
 
-## 🎰 Развертывание на сервере
+## 🎰 Deployment on the server
 
-- коннектимся к серверу
+- connect to the server
 ```
-$ ssh root@<IP сервера>
+$ ssh root@<server IP>
 ```
-- создаем юзера, даем ему права и коннектимся с ним
+- create a user, give him permissions, and connect to him
 ```
 $ adduser <unix_username>
 $ usermod <unix_username> -aG sudo
 $ su - <unix_username>
 ```
-- обновляем пакеты, устанавливаем новые
+- update packages, install new ones
 ```
 $ sudo apt update
 $ sudo apt upgrade
 $ sudo apt install python3-venv python3-pip postgresql nginx
 ```
-- проверяем, что Nginx запущен
+- check that Nginx is running
 ```
 $ sudo systemctl start nginx
 $ sudo systemctl status nginx
 ```
-- клонируем репозиторий и заходим в него
+- clone the repository and log in
 ```
 $ git clone https://github.com/lulzseq/netology-cloud-storage.git
 $ cd netology-cloud-storage
 ```
-### База данных
-- не забудем установить базу данных, используем пользователя `postgres`
+### Database
+- don't forget to install the database, use the `postgres` user.
 ```
 $ sudo su postgres
 $ psql
@@ -124,29 +124,29 @@ $ psql
 
 $ exit
 ```
-### Бэкенд
-- создаем файл `.env` для указания переменных
+### Backend
+- create a `.env` file for specifying variables
 ```
 # Django
 
 DJANGO_SECRET_KEY = '<DJANGO_SECRET_KEY>'
 
 POSTGRES_DB = 'django_db'
-POSTGRES_USER = '<логин>'
-POSTGRES_PASSWORD = '<пароль>'
-POSTGRES_HOST = 'http://<IP сервера>'
+POSTGRES_USER = '<login>'
+POSTGRES_PASSWORD = '<password>'
+POSTGRES_HOST = 'http://<server IP>'
 POSTGRES_PORT = '5432'
 
 # React
 
-REACT_APP_API_URL = 'http://<IP сервера>'
+REACT_APP_API_URL = 'http://<server IP>'
 ```
-- создаем и активируем виртуалльное окружение
+- create and activate the virtual environment
 ```
 $ python3 -m venv env
 $ source ./env/bin/activate
 ```
-- устанавливаем зависимости Python, применяем миграции и запускаем бэкенд
+- install Python dependencies, apply migrations and run the backend
 ```
 (env) $ pip install -r requirements.txt
 (env) $ python manage.py makemigrations accounts
@@ -154,12 +154,12 @@ $ source ./env/bin/activate
 (env) $ python manage.py migrate
 (env) $ python manage.py runserver 0.0.0.0:8000
 ```
-Сейчас Django проект должен быть доступен по адресу http://<IP сервера>:8000.
-- пишем конфиг Gunicorn
+The Django project should now be accessible at http://<server IP>:8000.
+- write the Gunicorn config
 ```
 (env) $ sudo nano /etc/systemd/system/gunicorn.service
 ```
-В файле пишем следующие настройки (вместо `<unix_username>` надо подставить ваше имя юзера):
+In the file write the following settings (instead of `<unix_username>` you should substitute your username):
 ```
 [Unit]
 Description=gunicorn.service
@@ -174,16 +174,16 @@ ExecStart=/home/<unix_username>/netology-cloud-storage/env/bin/gunicorn --access
 [Install]
 WantedBy=multi-user.target
 ```
-- запускаем Gunicorn
+- run the Gunicorn
 ```
 (env) $ sudo systemctl start gunicorn
 (env) $ sudo systemctl enable gunicorn
 ```
-- пишем конфиг Nginx
+- write the Nginx config
 ```
 (env) $ sudo nano /etc/nginx/sites-available/netology-cloud-storage
 ```
-В файле пишем следующие настройки (вместо `<unix_username>` надо подставить ваше имя юзера):
+In the file write the following settings (instead of `<unix_username>` you should substitute your username):
 ```
 server {
 	listen 80;
@@ -212,28 +212,28 @@ server {
 	}
 }
 ```
-- делаем ссылку на него
+- link to it
 ```
 (env) $ sudo ln -s /etc/nginx/sites-available/netology-cloud-storage /etc/nginx/sites-enabled
 ```
-- открываем порты и даем права Nginx
+- open ports and give rights to Nginx
 ```
 (env) $ sudo ufw allow 8000
 (env) $ sudo ufw allow 80
 (env) $ sudo ufw allow 'Nginx Full'
 ```
-- проверяем, что службы активны
+- check that the services are active
 ```
 (env) $ sudo systemctl status gunicorn
 (env) $ sudo systemctl status nginx
 ```
-- перезагружаем службы
+- restart the services
 ```
 (env) $ sudo systemctl daemon-reload
 (env) $ sudo systemctl restart gunicorn
 (env) $ sudo systemctl restart nginx
 ```
-Теперь Django проект должен быть доступен по http://<IP сервера> на обычном порту 80. Если видим ошибку 502, то, возможно, делло в правах и меняем существующего юзера на имя нашего юзера:
+Now Django project should be accessible via http://<server IP> on normal port 80. If we see a 502 error, it's probably a permissions issue, and change the existing user to our user name:
 ```
 (env) $ sudo nano /etc/nginx/nginx.conf
 ```
@@ -244,18 +244,18 @@ user <unix_username>
 ...
 ...
 ```
-- перезагружаем службы еще раз и Django проект должен быть доступен по http://<IP сервера> на обычном порту 80:
+- restart services again and Django project should be accessible via http://<server IP> on normal port 80:
 ```
 (env) $ sudo systemctl daemon-reload
 (env) $ sudo systemctl restart gunicorn
 (env) $ sudo systemctl restart nginx
 ```
-- выходим из пользователя обратно в `root`
+- log out of the user back to `root`
 ```
 (env) $ exit
 ```
-### Фронтенд
-- устанавливаем NodeJS v.18+ и свежий Yarn
+### Frontend
+- install NodeJS v.18+ and Yarn
 ```
 $ curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - 
 $ sudo apt-get install -y nodejs
@@ -264,20 +264,20 @@ $ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 $ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 $ sudo apt update && sudo apt install yarn
 ```
-- заходим обратно в нашего юзера
+- logging back into our user
 ```
 $ su - <unix_username>
 ```
-- устанавливаем зависимости и запускаем сборку фронтенда
+- install dependencies and start building the frontend
 ```
 $ yarn
 $ yarn build
 ```
-- проверяем Nginx и перезагружаем его
+- check Nginx and restart it
 ```
 $ sudo nginx -t
 $ sudo systemctl restart nginx
 ```
-Теперь проект Django + React должен быть полностью доступен по http://<IP сервера> на обычном порту 80.
+The Django + React project should now be fully accessible via http://<server IP> on regular port 80.
 ## 👮‍♀️ License
 - [MIT](https://github.com/lulzseq/netology-cloud-storage/blob/master/LICENSE)
